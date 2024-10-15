@@ -1,0 +1,257 @@
+/* CSS Variables for easy theming */
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #ffffff;
+    --background-color: #f5f7fa;
+    --text-color: #333333;
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
+    --hover-primary-color: #357ABD;
+}
+#plotCanvas {
+    width: 100%;
+    height: auto; /* Высота будет автоматически зависеть от ширины */
+    max-width: 500px; /* Максимальная ширина для лучшей читаемости на больших экранах */
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    line-height: 1.6;
+}
+
+#header {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    text-align: center;
+    padding: 20px 0;
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    max-width: 730px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--primary-color);
+}
+
+.input-field {
+    margin-bottom: 20px;
+}
+
+.input-field label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+.input-field input[type="number"] {
+    width: 100%;
+    max-width: 660px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    transition: border-color var(--transition-speed);
+    box-sizing: border-box; /* Учитывает padding и border в ширине */
+}
+
+.input-field input[type="number"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.checkbox-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.checkbox-option {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+.checkbox-option:hover {
+    background-color: #e0e0e0;
+}
+
+.checkbox-option input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.button-container button.active {
+    background-color: #1c6dd0; /* Цвет выделенной кнопки */
+    color: #ffffff; /* Текст белого цвета для контраста */
+}
+
+.button-group {
+    display: inline-flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.button-group button {
+    background-color: var(--primary-color);
+    border: none;
+    color: var(--secondary-color);
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+.button-group button:hover {
+    background-color: var(--hover-primary-color);
+}
+
+.submit-button {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 15px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    margin-top: 20px;
+}
+
+.submit-button:hover {
+    background-color: var(--hover-primary-color);
+}
+
+.error-message {
+    margin-top: 10px;
+    font-size: 14px;
+    color: red;
+    text-align: center;
+}
+
+/* Центрирование кнопок выбора R */
+#r-buttons {
+    justify-content: center; /* Центрирование кнопок внутри контейнера */
+    gap: 10px; /* Задаем расстояние между кнопками */
+}
+
+#r-buttons button {
+    padding: 12px 20px; /* Чуть уменьшаем внутренний отступ */
+    font-size: 18px; /* Немного уменьшаем размер шрифта */
+    width: auto; /* Убираем фиксированную ширину */
+    flex-shrink: 0; /* Предотвращаем уменьшение кнопок при масштабировании */
+    text-align: center; /* Центрируем текст внутри кнопок */
+    box-sizing: border-box; /* Учитывает padding и border в ширине */
+    margin: 4px;
+}
+
+#results {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background-color: var(--secondary-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+.selected-value {
+    margin-top: 10px;
+    font-size: 16px;
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+
+    #r-buttons {
+        flex-direction: column; /* На маленьких экранах кнопки выстраиваются вертикально */
+        align-items: center; /* Центрирование кнопок по горизонтали */
+    }
+
+    #r-buttons button {
+        width: 100%; /* Кнопки занимают 100% ширины на маленьких экранах */
+    }
+}
+
+.main-wrapper {
+    display: flex;
+    justify-content: space-between; /* Размещает контейнеры по краям */
+    gap: 20px; /* Отступ между контейнерами */
+    padding: 20px;
+}
+
+.left-container,
+.right-container {
+    width: 48%; /* Ширина контейнеров, чтобы они располагались рядом */
+    box-sizing: border-box; /* Учитывает отступы и границы */
+}
+
+#resultsTable {
+    border: 1px solid black;
+}

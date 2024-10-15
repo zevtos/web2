@@ -1,0 +1,33 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <!-- Регистрация сервлетов -->
+    <servlet>
+        <servlet-name>ControllerServlet</servlet-name>
+        <servlet-class>ru.itmo.webserver.ControllerServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>AreaCheckServlet</servlet-name>
+        <servlet-class>ru.itmo.webserver.AreaCheckServlet</servlet-class>
+    </servlet>
+
+    <!-- Маппинг сервлетов -->
+    <servlet-mapping>
+        <servlet-name>ControllerServlet</servlet-name>
+        <url-pattern>/controller</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AreaCheckServlet</servlet-name>
+        <url-pattern>/check</url-pattern>
+    </servlet-mapping>
+
+    <!-- Welcome файлы -->
+    <welcome-file-list>
+        <welcome-file>templates/index.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>
