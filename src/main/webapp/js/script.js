@@ -1,10 +1,12 @@
 // Переменные для хранения выбранных значений X и R
 let selectedX = null;
 let selectedR = null;
+let selectedY = null;
+let points = []; // Массив для хранения всех точек
 
 // Функция для установки выбранного значения X
 function setXValue(value) {
-    selectedX = value;
+    selectedX = parseInt(value, 10);
     const xInput = document.getElementById("x");
 
     if (xInput !== null) {
@@ -21,42 +23,48 @@ function setXValue(value) {
 
 // Функция для установки выбранного значения Y
 function setYValue(value) {
-    selectedY = value;
-    // Обновляем точку на графике
+    selectedY = parseFloat(value);
     updatePointOnGraph();
 }
 
-// Функция для установки выбранного значения R
+function updateSelectedRValue(value) {
+    const rSelectedElement = document.getElementById("r-selected");
+    rSelectedElement.textContent = `Выбранный R: ${value}`;
+}
+
 function setRValue(value) {
-    selectedR = value;
+    selectedR = parseFloat(value);
     document.getElementById("r").value = value;
     updateButtonState('r-buttons', value);
-    document.getElementById("r-selected").textContent = `Selected R: ${value}`;
-    updatePointOnGraph();
+    updateSelectedRValue(value);
+    drawCoordinateSystem();
+    drawAllPoints();
 }
 
 // Обновление точки на графике в соответствии с текущими значениями X, Y и R
 function updatePointOnGraph() {
-    const x = parseFloat(document.getElementById("x").value);
-    const y = parseFloat(document.getElementById("y").value);
-    const r = parseFloat(document.getElementById("r").value);
+    const x = selectedX;
+    const y = selectedY;
+    const r = selectedR;
 
     if (!isNaN(x) && !isNaN(y) && !isNaN(r)) {
         const canvas = document.getElementById("plotCanvas");
         const ctx = canvas.getContext("2d");
 
+        drawCoordinateSystem();
+        drawAllPoints();
+
         // Получаем размеры канваса и масштабируем координаты
-        const rect = canvas.getBoundingClientRect();
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const scale = rect.width / 4;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const scale = canvas.width / 4;
 
         // Рассчитываем положение точки на графике
         const adjustedX = centerX + (x / r) * scale;
         const adjustedY = centerY - (y / r) * scale;
 
-        // Рисуем точку
-        drawPoint(ctx, adjustedX, adjustedY);
+        // Рисуем новую точку
+        drawPoint(ctx, adjustedX, adjustedY, "black");
     }
 }
 
@@ -64,7 +72,7 @@ function updatePointOnGraph() {
 function updateButtonState(containerId, selectedValue) {
     const buttons = document.getElementById(containerId).getElementsByTagName('button');
     for (let button of buttons) {
-        if (button.innerHTML.trim() === String(selectedValue)) {
+        if (parseFloat(button.innerHTML.trim()) === selectedValue) {
             button.classList.add('active');
         } else {
             button.classList.remove('active');
@@ -102,50 +110,42 @@ function handleCanvasClick(event) {
     const y = (event.clientY - rect.top) * scaleY;
 
     // Центр координатного пространства графика (исходный центр канваса)
-    const centerX = canvas.width / 2; // Не rect.width, а реальные размеры канваса
+    const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
     // Масштаб графика относительно выбранного R (в пикселях на каждую единицу R)
-    const scale = canvas.width / 4; // Масштаб по оси X и Y одинаковый, так как график квадратный
+    const scale = canvas.width / 4;
 
     // Преобразование координат в систему графика
-    const graphX = ((x - centerX) / scale) * selectedR; // Преобразование x-координаты клика
-    const graphY = ((centerY - y) / scale) * selectedR; // Преобразование y-координаты клика
+    const graphX = ((x - centerX) / scale) * selectedR;
+    const graphY = ((centerY - y) / scale) * selectedR;
 
     // Находим ближайшее значение X из допустимых
     const closestX = findClosestX(graphX);
-    setXValue(closestX); // Устанавливаем ближайший X
-
-    // Рассчитываем новое положение X для рисования точки с учетом динамических размеров
-    const adjustedX = centerX + (closestX / selectedR) * scale;
+    setXValue(closestX);
 
     // Обновляем поле Y с округлением до двух знаков после запятой
-    document.getElementById("y").value = graphY.toFixed(2);
+    const roundedY = parseFloat(graphY.toFixed(2));
+    document.getElementById("y").value = roundedY;
+    setYValue(roundedY);
 
-    // Рисуем точку на графике
-    drawPoint(ctx, adjustedX, y);
+    // Отправляем данные на сервер
+    sendData();
 }
 
-
-
 // Функция для рисования точки
-function drawPoint(ctx, x, y) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // Очищаем канвас
-    drawCoordinateSystem(); // Перерисовываем систему координат
-
-    // Рисуем точку
-    ctx.fillStyle = "#ff0000"; // Красная точка
+function drawPoint(ctx, x, y, color) {
+    ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.arc(x, y, 5, 0, 2 * Math.PI); // Радиус точки 5 пикселей
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
     ctx.fill();
 }
 
 // Функция для отправки данных на сервер
 function sendData() {
-    // Получаем выбранные значения X, Y и R
-    const x = parseInt(document.getElementById("x").value);  // Получаем значение из скрытого поля напрямую
-    const y = document.getElementById("y").value;
-    const r = document.getElementById("r").value;
+    const x = selectedX;
+    const y = selectedY;
+    const r = selectedR;
 
     // Проверка корректности данных перед отправкой
     if (!validateInputs(x, y, r)) {
@@ -159,44 +159,63 @@ function sendData() {
     // Используем SuperAgent для GET-запроса
     superagent
         .get(url)
-        .query({x: x, y: y, r: r})  // Добавляем параметры x, y и r к запросу
+        .query({x: x, y: y, r: r})
         .end((err, res) => {
             if (err) {
-                // Обработка ошибки
                 showError({message: err.message || 'Ошибка при отправке данных на сервер'});
                 return;
             }
 
             // Обработка успешного ответа
-            document.body.innerHTML = res.text; // Обновляем страницу с полученным HTML
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(res.text, 'text/html');
+            const resultsTable = htmlDoc.querySelector('#resultsTable');
+
+            if (resultsTable) {
+                const rows = resultsTable.querySelectorAll('tr');
+                const lastRow = rows[rows.length - 1];
+                const cells = lastRow.querySelectorAll('td');
+
+                if (cells.length >= 4) {
+                    const newPoint = {
+                        x: parseFloat(cells[0].textContent),
+                        y: parseFloat(cells[1].textContent),
+                        r: parseFloat(cells[2].textContent),
+                        isHit: cells[3].textContent.trim().toLowerCase() === 'да'
+                    };
+
+                    points.push(newPoint);
+                    updateResults();
+                    drawAllPoints();
+                    savePointsToLocalStorage();
+                }
+            }
         });
 }
 
+// Сохранение точек в localStorage
+function savePointsToLocalStorage() {
+    localStorage.setItem("points", JSON.stringify(points));
+}
 
-// Валидация данных (проверка, что X и Y в пределах допустимых значений, а R — положительное)
+// Загрузка точек из localStorage
+function loadPointsFromLocalStorage() {
+    const storedPoints = localStorage.getItem("points");
+    if (storedPoints) {
+        points = JSON.parse(storedPoints);
+        drawAllPoints();
+    }
+}
+
+// Валидация данных
 function validateInputs(x, y, r) {
     const validXValues = [-3, -2, -1, 0, 1, 2, 3, 4, 5];
     const isXValid = validXValues.includes(x);
-    const parsedY = parseFloat(y);
-    const isYValid = !isNaN(parsedY) && parsedY >= -5 && parsedY <= 5;
-
+    const isYValid = !isNaN(y) && y >= -5 && y <= 5;
     const validRValues = [1, 1.5, 2, 2.5, 3];
     const isRValid = validRValues.includes(r);
 
     return isXValid && isYValid && isRValid;
-}
-
-
-// Обработка ответа от сервера
-function handleResponse(data) {
-    const resultContainer = document.getElementById("results");
-
-    // Очищаем контейнер результатов
-    resultContainer.innerHTML = '';
-
-    // Формируем и выводим сообщение с результатом
-    const resultMessage = `Точка с координатами (${data.x}, ${data.y}) ${data.isHit ? 'попала' : 'не попала'} в область радиуса ${data.r}.`;
-    resultContainer.innerHTML = `<p>${resultMessage}</p>`;
 }
 
 // Отображение ошибки
@@ -206,22 +225,10 @@ function showError(error) {
     errorMessage.style.display = "block";
 }
 
-// Функция для получения выбранного значения X из чекбоксов
-function getSelectedX() {
-    const checkboxes = document.querySelectorAll('input[name="x"]:checked');
-    if (checkboxes.length === 0) {
-        return null;
-    }
-    return parseInt(checkboxes[0].value); // Берём первое выбранное значение
-}
-
 // Функция для рисования системы координат
 function drawCoordinateSystem() {
     const canvas = document.getElementById("plotCanvas");
     const ctx = canvas.getContext("2d");
-
-    canvas.width = 500;
-    canvas.height = 500;
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
@@ -229,8 +236,8 @@ function drawCoordinateSystem() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Рисуем фигуры как в предыдущем коде
-    ctx.fillStyle = "#4a90e2";
+    // Рисуем фигуры
+    ctx.fillStyle = "rgba(74, 144, 226, 0.5)";
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(centerX - scale, centerY);
@@ -257,9 +264,6 @@ function drawCoordinateSystem() {
     ctx.beginPath();
     ctx.moveTo(0, centerY);
     ctx.lineTo(canvas.width, centerY);
-    ctx.stroke();
-
-    ctx.beginPath();
     ctx.moveTo(centerX, 0);
     ctx.lineTo(centerX, canvas.height);
     ctx.stroke();
@@ -267,20 +271,64 @@ function drawCoordinateSystem() {
     // Отметки осей
     ctx.font = "14px Arial";
     ctx.fillStyle = "#000";
-    ctx.fillText("R", centerX + scale - 10, centerY + 20);
-    ctx.fillText("R/2", centerX + scale / 2 - 20, centerY + 20);
-    ctx.fillText("-R", centerX - scale - 20, centerY + 20);
-    ctx.fillText("-R/2", centerX - scale / 2 - 30, centerY + 20);
-    ctx.fillText("R", centerX - 20, centerY - scale + 10);
-    ctx.fillText("R/2", centerX - 30, centerY - scale / 2 + 10);
-    ctx.fillText("-R/2", centerX - 30, centerY + scale / 2 + 10);
-    ctx.fillText("-R/2", centerX - 30, centerY + scale / 2 + 10);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // X axis
+    ctx.fillText("R", centerX + scale, centerY + 20);
+    ctx.fillText("R/2", centerX + scale / 2, centerY + 20);
+    ctx.fillText("-R", centerX - scale, centerY + 20);
+    ctx.fillText("-R/2", centerX - scale / 2, centerY + 20);
+
+    // Y axis
+    ctx.fillText("R", centerX - 20, centerY - scale);
+    ctx.fillText("R/2", centerX - 20, centerY - scale / 2);
+    ctx.fillText("-R/2", centerX - 20, centerY + scale / 2);
+    ctx.fillText("-R", centerX - 20, centerY + scale);
 }
 
+// Функция для отрисовки всех точек
+function drawAllPoints() {
+    const canvas = document.getElementById("plotCanvas");
+    const ctx = canvas.getContext("2d");
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const scale = canvas.width / 4;
+
+    points.forEach(point => {
+        const x = centerX + (point.x / point.r) * scale;
+        const y = centerY - (point.y / point.r) * scale;
+        drawPoint(ctx, x, y, point.isHit ? "green" : "red");
+    });
+}
+
+// Функция обновления результатов
+function updateResults() {
+    const resultsContainer = document.getElementById("results");
+    resultsContainer.innerHTML = `
+        <table>
+            <tr>
+                <th>X</th>
+                <th>Y</th>
+                <th>R</th>
+                <th>Результат</th>
+            </tr>
+            ${points.map(point => `
+                <tr>
+                    <td>${point.x}</td>
+                    <td>${point.y}</td>
+                    <td>${point.r}</td>
+                    <td>${point.isHit ? 'Попадание' : 'Промах'}</td>
+                </tr>
+            `).join('')}
+        </table>
+    `;
+}
 
 // Обработчик загрузки страницы
 window.onload = function () {
     drawCoordinateSystem();
+    loadPointsFromLocalStorage();
     const canvas = document.getElementById("plotCanvas");
     canvas.addEventListener("click", handleCanvasClick);
 }

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -9,93 +9,66 @@
     <script src="https://cdn.jsdelivr.net/npm/superagent/superagent.min.js"></script>
 </head>
 <body>
-<div id="header">
-    Student Name: Владислав | Group: P3234 | Variant: 24155
-</div>
+<div class="container">
+    <header>
+        <h1>Проверка попадания точки</h1>
+        <p>Владислав | Группа: P3234 | Вариант: 24155</p>
+    </header>
 
-<div class="main-wrapper">
-    <div class="left-container">
-        <!-- Главная область для расположения контейнеров слева -->
-        <div class="container">
-            <h1>Проверка попадания точки</h1>
+    <main>
+        <div class="graph-container">
+            <canvas id="plotCanvas" width="500" height="500"></canvas>
+        </div>
 
-            <!-- Форма для ввода координат и радиуса -->
-            <form id="pointForm" action="${pageContext.request.contextPath}/controller" method="get">
-                <div class="input-field">
-                    <!-- Выбор X через чекбоксы -->
+        <div class="form-container">
+            <form id="pointForm">
+                <div class="input-group">
                     <label>Выберите X:</label>
-                    <div id="x-buttons" class="checkbox-group">
+                    <div id="x-buttons" class="button-group">
+                        <% for (int i = -3; i <= 5; i++) { %>
                         <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="-3" onclick="setXValue(-3)"> -3
+                            <input type="checkbox" name="x" value="<%= i %>" onclick="setXValue(<%= i %>)">
+                            <%= i %>
                         </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="-2" onclick="setXValue(-2)"> -2
-                        </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="-1" onclick="setXValue(-1)"> -1
-                        </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="0" onclick="setXValue(0)"> 0
-                        </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="1" onclick="setXValue(1)"> 1
-                        </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="2" onclick="setXValue(2)"> 2
-                        </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="3" onclick="setXValue(3)"> 3
-                        </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="4" onclick="setXValue(4)"> 4
-                        </label>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="5" onclick="setXValue(5)"> 5
-                        </label>
+                        <% } %>
                     </div>
-                    <!-- Скрытое поле для хранения выбранного X -->
-                    <input type="hidden" id="x" name="x" value="">
+                    <input type="hidden" id="x" name="x" required>
                 </div>
 
-                <div class="input-field">
-                    <!-- Ввод Y через текстовое поле -->
+                <div class="input-group">
                     <label for="y">Введите Y (от -5 до 5):</label>
-                    <input type="number" onclick="updatePointOnGraph()" id="y" name="y" min="-5" max="5" required
-                           placeholder="Введите значение Y">
+                    <input type="number" id="y" name="y" min="-5" max="5" step="any" required
+                           onchange="setYValue(this.value)">
                 </div>
 
-                <div class="input-field">
-                    <!-- Выбор R через кнопки -->
-                    <label for="r">Выберите R:</label>
-                    <div id="r-buttons" class="button-container">
-                        <button type="button" onclick="setRValue(1)">1</button>
-                        <button type="button" onclick="setRValue(1.5)">1.5</button>
-                        <button type="button" onclick="setRValue(2)">2</button>
-                        <button type="button" onclick="setRValue(2.5)">2.5</button>
-                        <button type="button" onclick="setRValue(3)">3</button>
+                <div class="input-group">
+                    <label>Выберите R:</label>
+                    <div id="r-buttons" class="button-group">
+                        <% double[] rValues = {1, 1.5, 2, 2.5, 3}; %>
+                        <% for (double value : rValues) { %>
+                        <button type="button" onclick="setRValue(<%= value %>)"><%= value %>
+                        </button>
+                        <% } %>
                     </div>
-                    <div id="r-selected" class="selected-value">Selected R: None</div>
-                    <input type="hidden" id="r" name="r" value="">
+                    <div id="r-selected" class="selected-value">Выбранный R: Не выбран</div>
+                    <input type="hidden" id="r" name="r" required>
                 </div>
 
-                <button type="button" onclick="sendData()">Проверить</button>
+                <button type="button" class="submit-btn" onclick="sendData()">Проверить</button>
             </form>
-
-            <!-- Контейнер для отображения ошибок -->
-            <div id="error-message" style="display:none; color: red;"></div>
         </div>
+    </main>
+
+    <div id="results" class="results-container">
+        <!-- Результаты будут добавляться сюда динамически -->
     </div>
 
-    <div class="right-container">
-        <!-- Дополнительный контейнер справа -->
-        <div class="container">
-            <canvas id="plotCanvas"></canvas>
-        </div>
-    </div>
+    <div id="error-message" class="error-message"></div>
 </div>
-<script type="text/javascript">
+
+<script>
     const pageContextPath = "${pageContext.request.contextPath}";
 </script>
-<script src="${pageContext.request.contextPath}/js/scripts.js"></script>
+<script src="${pageContext.request.contextPath}/js/script.js"></script>
 </body>
 </html>
