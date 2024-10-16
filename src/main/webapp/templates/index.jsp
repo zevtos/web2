@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -56,14 +57,30 @@
 
                 <button type="button" class="submit-btn" onclick="sendData()">Проверить</button>
             </form>
+            <div id="error-message" class="error-message"></div>
         </div>
     </main>
 
     <div id="results" class="results-container">
-        <!-- Результаты будут добавляться сюда динамически -->
+        <h2>Предыдущие результаты:</h2>
+        <table id="resultsTable">
+            <tr>
+                <th>X</th>
+                <th>Y</th>
+                <th>R</th>
+                <th>Результат</th>
+            </tr>
+            <c:forEach var="result" items="${sessionScope.results}">
+                <tr>
+                    <td>${result.x}</td>
+                    <td>${result.y}</td>
+                    <td>${result.r}</td>
+                    <td>${result.hit ? 'Попадание' : 'Промах'}</td>
+                </tr>
+            </c:forEach>
+        </table>
     </div>
 
-    <div id="error-message" class="error-message"></div>
 </div>
 
 <script>

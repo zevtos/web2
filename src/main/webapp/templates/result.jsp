@@ -1,12 +1,7 @@
-<%--@elvariable id="x" type="java.lang.Double"--%>
-<%--@elvariable id="y" type="java.lang.Double"--%>
-<%--@elvariable id="r" type="java.lang.Double"--%>
-<%--@elvariable id="isHit" type="java.lang.Boolean"--%>
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,40 +10,55 @@
 </head>
 <body>
 <div class="container">
-    <h1>Результат проверки точки</h1>
-    <p>Координаты X: ${x}, Y: ${y}, Радиус: ${r}</p>
+    <header>
+        <h1>Результаты проверки точки</h1>
+        <p>Владислав | Группа: P3234 | Вариант: 24155</p>
+    </header>
 
-    <c:choose>
-        <c:when test="${isHit}">
-            <p>Точка попала в область!</p>
-        </c:when>
-        <c:otherwise>
-            <p>Точка не попала в область.</p>
-        </c:otherwise>
-    </c:choose>
+    <main>
+        <div class="result-info">
+            <p><strong>Проверенные значения:</strong></p>
+            <p>X: ${x}, Y: ${y}, R: ${r}</p>
 
-    <h2>Все предыдущие результаты:</h2>
-    <table id="resultsTable">
-    <tr>
-        <th>X</th>
-        <th>Y</th>
-        <th>R</th>
-        <th>Попадание</th>
-    </tr>
-    <c:forEach var="result" items="${sessionScope.results}">
-        <tr>
-            <td>${result.x}</td>
-            <td>${result.y}</td>
-            <td>${result.r}</td>
-            <td>${result.hit ? 'Да' : 'Нет'}</td>
-        </tr>
-    </c:forEach>
-</table>
-
-
-    <form action="${pageContext.request.contextPath}">
-        <button type="submit">Вернуться к форме</button>
-    </form>
+            <c:choose>
+                <c:when test="${isHit}">
+                    <p style="color: green; font-weight: bold;">Точка попала в область!</p>
+                </c:when>
+                <c:otherwise>
+                    <p style="color: red; font-weight: bold;">Точка не попала в область.</p>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </main>
+    <div id="results" class="results-container">
+        <h2>Предыдущие результаты:</h2>
+        <table id="resultsTable">
+            <tr>
+                <th>X</th>
+                <th>Y</th>
+                <th>R</th>
+                <th>Результат</th>
+            </tr>
+            <c:forEach var="result" items="${sessionScope.results}">
+                <tr>
+                    <td>${result.x}</td>
+                    <td>${result.y}</td>
+                    <td>${result.r}</td>
+                    <td>${result.hit ? 'Попадание' : 'Промах'}</td>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>
+    <div class=container>
+        <form action="${pageContext.request.contextPath}">
+            <button type="submit" class="submit-btn">Вернуться к проверке</button>
+        </form>
+    </div>
 </div>
+
+<script>
+    const pageContextPath = "${pageContext.request.contextPath}";
+</script>
+<script src="${pageContext.request.contextPath}/js/script.js"></script>
 </body>
 </html>

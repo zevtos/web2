@@ -30,14 +30,30 @@ public class ControllerServlet extends HttpServlet {
         String yParam = request.getParameter("y");
         String rParam = request.getParameter("r");
 
-        // Если параметры не переданы (null), отображаем форму
-        if (xParam == null || yParam == null || rParam == null) {
-            // Перенаправляем на index.jsp, если параметры отсутствуют
-            request.getRequestDispatcher(INDEX_JSP_PATH).forward(request, response);
-            return;
+        if (areParametersMissing(xParam, yParam, rParam)) {
+            forwardToIndexPage(request, response);
+        } else {
+            redirectToAreaCheck(request, response, xParam, yParam, rParam);
         }
+    }
 
-        // Перенаправляем запрос на AreaCheckServlet для проверки попадания точки
-        response.sendRedirect(request.getContextPath() + AREA_CHECK_SERVLET_PATH + "?x=" + xParam + "&y=" + yParam + "&r=" + rParam);
+    private boolean areParametersMissing(String x, String y, String r) {
+        return x == null || y == null || r == null;
+    }
+
+    // Метод для перенаправления на index.jsp
+    private void forwardToIndexPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher(INDEX_JSP_PATH).forward(request, response);
+    }
+
+    // Метод для перенаправления запроса на AreaCheckServlet с параметрами
+    private void redirectToAreaCheck(HttpServletRequest request, HttpServletResponse response, String x, String y, String r) throws IOException {
+        String redirectUrl = buildRedirectUrl(request.getContextPath(), x, y, r);
+        response.sendRedirect(redirectUrl);
+    }
+
+    // Метод для построения URL с параметрами для перенаправления
+    private String buildRedirectUrl(String contextPath, String x, String y, String r) {
+        return String.format("%s%s?x=%s&y=%s&r=%s", contextPath, ControllerServlet.AREA_CHECK_SERVLET_PATH, x, y, r);
     }
 }
