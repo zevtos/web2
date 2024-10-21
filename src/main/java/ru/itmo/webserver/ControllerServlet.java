@@ -15,17 +15,7 @@ public class ControllerServlet extends HttpServlet {
     private static final String AREA_CHECK_SERVLET_PATH = "/check";
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Получаем параметры X, Y, R из запроса
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String xParam = request.getParameter("x");
         String yParam = request.getParameter("y");
         String rParam = request.getParameter("r");

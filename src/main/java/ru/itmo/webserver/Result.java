@@ -24,7 +24,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Result implements Serializable {
-    //    @Id
+//    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @NotNull
     private Long id;

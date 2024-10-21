@@ -37,8 +37,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.mockito:mockito-core:3.9.0")
     testImplementation("org.mockito:mockito-junit-jupiter:3.9.0")
-
-    implementation("javax.inject:javax.inject:1")
 }
 //dependencies {
 //        // Сервлеты

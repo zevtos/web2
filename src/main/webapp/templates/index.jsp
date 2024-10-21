@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Проверка попадания точки</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/superagent/superagent.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -86,6 +85,7 @@
 <script>
     const pageContextPath = "${pageContext.request.contextPath}";
 </script>
+<script src="https://cdn.jsdelivr.net/npm/superagent/superagent.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/script.js"></script>
 </body>
 </html>

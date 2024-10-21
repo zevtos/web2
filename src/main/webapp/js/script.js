@@ -1,6 +1,4 @@
 (function () {
-
-
 // Переменные для хранения выбранных значений X и R
     let selectedX = null;
     let selectedR = null;
