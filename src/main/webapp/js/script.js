@@ -298,10 +298,11 @@
         // Очистить текущий массив точек
         points = [];
 
-        // Пройтись по строкам таблицы, начиная со второй строки (первая - заголовки)
-        const rows = resultsTable.getElementsByTagName("tr");
-        for (let i = 1; i < rows.length; i++) {
-            const cells = rows[i].getElementsByTagName("td");
+        // Преобразуем HTMLCollection в массив и пропускаем первый элемент (заголовок таблицы)
+        const rowsArray = Array.from(resultsTable.getElementsByTagName("tr")).slice(1);
+
+        for (const row of rowsArray) {
+            const cells = row.getElementsByTagName("td");
 
             // Парсим значения из ячеек строки
             if (cells.length >= 4) {
@@ -319,6 +320,7 @@
                 });
             }
         }
+
     }
 
 
@@ -329,6 +331,7 @@
         drawAllPoints();
         const canvas = document.getElementById("plotCanvas");
         canvas.addEventListener("click", handleCanvasClick);
+        setRValue(3);
     }
     window.setXValue = setXValue;
     window.setYValue = setYValue;

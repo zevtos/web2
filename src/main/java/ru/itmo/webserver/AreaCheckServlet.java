@@ -26,18 +26,19 @@ public class AreaCheckServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String xParam = request.getParameter("x");
-        String yParam = request.getParameter("y");
-        String rParam = request.getParameter("r");
-
         try {
-            // Парсинг и валидация данных через InputService
+            // Получение параметров из атрибутов запроса
+            String xParam = (String) request.getAttribute("x");
+            String yParam = (String) request.getAttribute("y");
+            String rParam = (String) request.getAttribute("r");
+
+            // Парсинг и валидация данных
             Result result = inputService.parseAndValidateInput(xParam, yParam, rParam);
 
             // Проверка попадания точки в область
             result.setHit(inputService.checkPoint(result));
 
-            // Сохранение результата в сессии
+            // Синхронное сохранение результата в сессии
             HttpSession session = request.getSession();
             resultService.saveResult(session, result);
 
@@ -52,12 +53,11 @@ public class AreaCheckServlet extends HttpServlet {
         } catch (IllegalArgumentException e) {
             // Обработка ошибок валидации и парсинга
             request.setAttribute("error", e.getMessage());
-            request.setAttribute("x", xParam);
-            request.setAttribute("y", yParam);
-            request.setAttribute("r", rParam);
+            request.setAttribute("x", request.getAttribute("x"));
+            request.setAttribute("y", request.getAttribute("y"));
+            request.setAttribute("r", request.getAttribute("r"));
             request.getRequestDispatcher(INDEX_JSP_PATH).forward(request, response);
         } catch (Exception e) {
-            // Общий перехват для непредвиденных ошибок
             request.setAttribute("error", "Произошла ошибка: " + e.getMessage());
             request.getRequestDispatcher(INDEX_JSP_PATH).forward(request, response);
         }

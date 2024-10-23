@@ -23,7 +23,7 @@ public class ControllerServlet extends HttpServlet {
         if (areParametersMissing(xParam, yParam, rParam)) {
             forwardToIndexPage(request, response);
         } else {
-            redirectToAreaCheck(request, response, xParam, yParam, rParam);
+            forwardToAreaCheck(request, response, xParam, yParam, rParam);
         }
     }
 
@@ -37,13 +37,10 @@ public class ControllerServlet extends HttpServlet {
     }
 
     // Метод для перенаправления запроса на AreaCheckServlet с параметрами
-    private void redirectToAreaCheck(HttpServletRequest request, HttpServletResponse response, String x, String y, String r) throws IOException {
-        String redirectUrl = buildRedirectUrl(request.getContextPath(), x, y, r);
-        response.sendRedirect(redirectUrl);
-    }
-
-    // Метод для построения URL с параметрами для перенаправления
-    private String buildRedirectUrl(String contextPath, String x, String y, String r) {
-        return String.format("%s%s?x=%s&y=%s&r=%s", contextPath, ControllerServlet.AREA_CHECK_SERVLET_PATH, x, y, r);
+    private void forwardToAreaCheck(HttpServletRequest request, HttpServletResponse response, String x, String y, String r) throws ServletException, IOException {
+        request.setAttribute("x", x);
+        request.setAttribute("y", y);
+        request.setAttribute("r", r);
+        request.getRequestDispatcher(AREA_CHECK_SERVLET_PATH).forward(request, response);
     }
 }

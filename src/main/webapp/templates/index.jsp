@@ -1,5 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%!
+    double[] rValues = {1, 1.5, 2, 2.5, 3};
+%>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -44,7 +47,6 @@
                 <div class="input-group">
                     <label>Выберите R:</label>
                     <div id="r-buttons" class="button-group">
-                        <% double[] rValues = {1, 1.5, 2, 2.5, 3}; %>
                         <% for (double value : rValues) { %>
                         <button type="button" onclick="setRValue(<%= value %>)"><%= value %>
                         </button>
