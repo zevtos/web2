@@ -28,12 +28,12 @@
                 <div class="input-group">
                     <label>Выберите X:</label>
                     <div id="x-buttons" class="button-group">
-                        <c:forEach begin="-3" end="5" var="i">
-                            <label class="checkbox-option">
-                                <input type="checkbox" name="x" value="${i}" onclick="setXValue(${i})">
-                                    ${i}
-                            </label>
-                        </c:forEach>
+                        <% for (int i = -3; i <= 5; i++) { %>
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="x" value="<%= i %>" onclick="setXValue(<%= i %>)">
+                            <%= i %>
+                        </label>
+                        <% } %>
                     </div>
                     <input type="hidden" id="x" name="x" required>
                 </div>
