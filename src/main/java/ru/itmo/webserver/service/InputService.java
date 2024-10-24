@@ -8,15 +8,33 @@ import ru.itmo.webserver.Result;
 
 import java.util.Set;
 
+/**
+ * InputService - сервис для парсинга и валидации входных данных.
+ * <p>
+ * Этот класс предоставляет методы для парсинга параметров, пришедших от клиента,
+ * валидации данных и проверки попадания точки в область на графике.
+ */
 public class InputService {
 
     private final Validator validator;
 
+    /**
+     * Конструктор класса InputService, инициализирующий валидатор для проверки данных.
+     */
     public InputService() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         this.validator = factory.getValidator();
     }
 
+    /**
+     * Парсит входные параметры x, y и r, затем выполняет валидацию данных.
+     *
+     * @param xParam строковое значение параметра x, пришедшее от клиента.
+     * @param yParam строковое значение параметра y, пришедшее от клиента.
+     * @param rParam строковое значение параметра r, пришедшее от клиента.
+     * @return объект Result, содержащий значения x, y и r, если они корректны.
+     * @throws IllegalArgumentException если данные не проходят валидацию или имеют неверный формат.
+     */
     public Result parseAndValidateInput(String xParam, String yParam, String rParam) {
         try {
             double x = Double.parseDouble(xParam);
@@ -42,10 +60,24 @@ public class InputService {
         }
     }
 
+    /**
+     * Проверяет, попадает ли точка с заданными координатами в область.
+     *
+     * @param result объект Result, содержащий координаты x, y и радиус r.
+     * @return true, если точка попадает в область, иначе false.
+     */
     public boolean checkPoint(Result result) {
         return checkPoint(result.getX(), result.getY(), result.getR());
     }
 
+    /**
+     * Проверяет, попадает ли точка с заданными координатами в область, заданную радиусом R.
+     *
+     * @param x координата x точки.
+     * @param y координата y точки.
+     * @param r радиус R, определяющий область проверки.
+     * @return true, если точка попадает в область, иначе false.
+     */
     public boolean checkPoint(double x, double y, double r) {
         // Четверть круга в левом нижнем углу
         if (x <= 0 && y <= 0 && (x * x + y * y <= r * r)) {
