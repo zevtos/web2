@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%!
-    double[] rValues = {1, 1.5, 2, 2.5, 3};
+    public static final double[] rValues = {1, 1.5, 2, 2.5, 3};
 %>
 <!DOCTYPE html>
 <html lang="ru">
@@ -28,12 +28,12 @@
                 <div class="input-group">
                     <label>Выберите X:</label>
                     <div id="x-buttons" class="button-group">
-                        <% for (int i = -3; i <= 5; i++) { %>
-                        <label class="checkbox-option">
-                            <input type="checkbox" name="x" value="<%= i %>" onclick="setXValue(<%= i %>)">
-                            <%= i %>
-                        </label>
-                        <% } %>
+                        <c:forEach begin="-3" end="5" var="i">
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="x" value="${i}" onclick="setXValue(${i})">
+                                    ${i}
+                            </label>
+                        </c:forEach>
                     </div>
                     <input type="hidden" id="x" name="x" required>
                 </div>

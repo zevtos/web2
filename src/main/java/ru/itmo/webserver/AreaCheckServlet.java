@@ -13,17 +13,27 @@ import java.io.IOException;
 
 import static ru.itmo.webserver.ControllerServlet.INDEX_JSP_PATH;
 
+/**
+ * Servlet для проверки попадания точки в заданную область на графике.
+ * <p>
+ * Обрабатывает GET-запросы на адрес "/check", парсит и валидирует входные параметры,
+ * проверяет попадание точки в область и сохраняет результаты в сессии.
+ */
 @WebServlet("/check")
 public class AreaCheckServlet extends HttpServlet {
 
-    private final InputService inputService;
-    private final ResultService resultService;
+    private final InputService inputService = new InputService();
+    private final ResultService resultService = new ResultService();
 
-    public AreaCheckServlet() {
-        this.inputService = new InputService();
-        this.resultService = new ResultService();
-    }
-
+    /**
+     * Обрабатывает GET-запросы, выполняет валидацию входных данных,
+     * проверку попадания точки в область и сохранение результата в сессии.
+     *
+     * @param request  запрос, содержащий параметры x, y, r
+     * @param response ответ, который будет направлен обратно клиенту
+     * @throws ServletException если произошла ошибка обработки запроса
+     * @throws IOException      если произошла ошибка ввода-вывода
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -58,6 +68,7 @@ public class AreaCheckServlet extends HttpServlet {
             request.setAttribute("r", request.getAttribute("r"));
             request.getRequestDispatcher(INDEX_JSP_PATH).forward(request, response);
         } catch (Exception e) {
+            // Общая обработка ошибок
             request.setAttribute("error", "Произошла ошибка: " + e.getMessage());
             request.getRequestDispatcher(INDEX_JSP_PATH).forward(request, response);
         }
