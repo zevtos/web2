@@ -55,11 +55,6 @@ public class ControllerServlet extends HttpServlet {
 
     /**
      * Перенаправляет клиента на начальную страницу (index.jsp).
-     *
-     * @param request  объект HttpServletRequest, содержащий информацию о запросе от клиента.
-     * @param response объект HttpServletResponse, который используется для отправки ответа клиенту.
-     * @throws ServletException если произошла ошибка, связанная с сервлетом.
-     * @throws IOException      если произошла ошибка ввода-вывода во время обработки запроса.
      */
     private void forwardToIndexPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher(INDEX_JSP_PATH).forward(request, response);
@@ -67,14 +62,6 @@ public class ControllerServlet extends HttpServlet {
 
     /**
      * Перенаправляет запрос на AreaCheckServlet с параметрами x, y и r.
-     *
-     * @param request  объект HttpServletRequest, содержащий информацию о запросе от клиента.
-     * @param response объект HttpServletResponse, который используется для отправки ответа клиенту.
-     * @param x        значение параметра x.
-     * @param y        значение параметра y.
-     * @param r        значение параметра r.
-     * @throws ServletException если произошла ошибка, связанная с сервлетом.
-     * @throws IOException      если произошла ошибка ввода-вывода во время обработки запроса.
      */
     private void forwardToAreaCheck(HttpServletRequest request, HttpServletResponse response, String x, String y, String r) throws ServletException, IOException {
         request.setAttribute("x", x);
